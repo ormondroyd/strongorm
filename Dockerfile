@@ -7,6 +7,7 @@ WORKDIR /app
 COPY . .
 
 RUN git config --global --add safe.directory '*' && \
+    sed -i 's/-Wall -Werror/-Wall -Werror -Wno-unused-but-set-variable/' arculator-wasm/Makefile && \
     make all
 
 FROM nginx:alpine
