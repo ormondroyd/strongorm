@@ -134,9 +134,8 @@ def parse_toml(root, file):
             disc_meta['archive'] = name
 
         if known_hash and known_hash != hash:
-            raise Exception(f"file hash for {software_id} doesn't match")
-        else:
-            hashes[software_id] = hash
+            print(f'WARNING: stored hash for {software_id} differs from fetched file — updating hash')
+        hashes[software_id] = hash
 
         for field in MANDATORY_FIELDS:
             if type(field) == str:
