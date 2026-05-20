@@ -1,6 +1,6 @@
 FROM python:3.11-slim AS builder
 
-RUN pip install jinja2 jinja2-cli toml
+RUN apt-get update && apt-get install -y make curl && pip install jinja2 jinja2-cli toml
 
 WORKDIR /app
 COPY . .
