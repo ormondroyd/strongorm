@@ -207,6 +207,8 @@ def fetch_file(root, path, software_id, known_hash):
     if not cache_path:
         if path.startswith('http://') or path.startswith('https://'):
             cache_path, hash = fetch_url(root, path, software_id, known_hash)
+            if cache_path is None:
+                return None, None
         else:
             src_path = os.path.join(root, path)
             if not os.path.isfile(src_path):
@@ -248,17 +250,22 @@ def fetch_url(root, url, software_id, known_hash=None):
     cache_path = os.path.join(CACHE_DIR, new_name)
 
     print(f'Downloading {url}')
-    r = requests.get(url)
-    r.raise_for_status()
+    try:
+        r = requests.get(url, timeout=30)
+        r.raise_for_status()
+    except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError,
+            requests.exceptions.Timeout) as e:
+        print(f'WARNING: skipping {software_id} — could not download {url}: {e}')
+        return None, None
     file_data = r.content
     hash = hashlib.sha256(file_data).hexdigest()
 
     if known_hash and hash != known_hash:
         raise Exception(f'incorrect hash for {software_id} downloaded from {url}')
-        
+
     with open(cache_path, 'wb') as f:
         f.write(file_data)
-   
+
     return cache_path, hash
 
 def fetch_local(root, path, software_id, known_hash) -> str:
