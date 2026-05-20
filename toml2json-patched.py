@@ -305,12 +305,16 @@ if __name__ == '__main__':
         data = parse_toml(root, file)
         json_data |= data
 
+    deps_to_remove = set()
     for software_id, deps in all_deps.items():
         for d in deps:
             if d not in all_software_ids:
-                raise Exception(f'{software_id} depends on unknown ID {d}')
-            if 'archive' not in json_data[d]:
+                print(f'WARNING: skipping {software_id} — depends on {d} which is missing/skipped')
+                deps_to_remove.add(software_id)
+            elif 'archive' not in json_data.get(d, {}):
                 raise Exception(f'{software_id} depends on ID {d} which is a disc?')
+    for sid in deps_to_remove:
+        json_data.pop(sid, None)
 
     json_out = os.path.join(out_dir, 'software.json')
     with open(json_out, 'w') as f:
