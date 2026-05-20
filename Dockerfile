@@ -8,7 +8,7 @@ COPY . .
 
 RUN git config --global --add safe.directory '*' && \
     sed -i 's/-Wall -Werror/-Wall -Werror -Wno-unused-but-set-variable/' arculator-wasm/Makefile && \
-    make build/index.html build/arculator.js build/nspark/nspark.js build/emu
+    make build/index.html build/arculator.js build/nspark/nspark.js build/emu build/software/software.json
 
 FROM nginx:alpine
 COPY --from=builder /app/build /usr/share/nginx/html
