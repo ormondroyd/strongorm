@@ -1,7 +1,7 @@
 FROM emscripten/emsdk:latest AS builder
 
 RUN apt-get update && apt-get install -y git curl python3 python3-pip make && \
-    pip3 install jinja2 jinja2-cli toml --break-system-packages
+    pip3 install jinja2 jinja2-cli toml requests --break-system-packages
 
 WORKDIR /app
 COPY . .
