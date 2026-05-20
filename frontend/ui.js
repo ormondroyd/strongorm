@@ -19,7 +19,6 @@ var Module = {
   },
   preRun: [],
   postRun: [],
-  logReadFiles: true,
   locateFile: file => file + '?' + ARCULATOR_BUILD_TAG,
   print: (function() {
     var element = document.getElementById('output');
