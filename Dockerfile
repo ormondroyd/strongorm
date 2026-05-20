@@ -1,11 +1,13 @@
-FROM python:3.11-slim AS builder
+FROM emscripten/emsdk:latest AS builder
 
-RUN apt-get update && apt-get install -y make curl && pip install jinja2 jinja2-cli toml
+RUN apt-get update && apt-get install -y git curl python3 python3-pip make && \
+    pip3 install jinja2 jinja2-cli toml --break-system-packages
 
 WORKDIR /app
 COPY . .
 
-RUN make all
+RUN git config --global --add safe.directory '*' && \
+    make all
 
 FROM nginx:alpine
 COPY --from=builder /app/build /usr/share/nginx/html
